@@ -1649,7 +1649,6 @@
 <li>Workspaces can be relatively large objects. If you see this message you need to increase or remove the limits on your stack size. On lxplus, you can issue the command <code>ulimit -s unlimited</code> before running <code>text2workspace.py</code> to remove it.</li>
 </ul>
 </li>
-<li><em>My templates are very noisy, how do I account for it properly?</em> or <em>How can I smooth out my templates?</em></li>
 <li><em>My fit does not converge</em> or <em>How do I solve the no crossing found message?</em><ul>
 <li>As any minimizer algorithm, the algorithms used by Combine also relies on steppings to find the minima and the crossings corresponding to certain confidence levels. The default parameters of Combine are optimised for value of the POIs of ~1, and ranges of around 1 order of magnitude larger for the crossing. If the expected crossing/POI values are very different from these defaults, the fitting procedure might fail. If that's the case, it is possible to change these parameters but usually there are easier solutions: 1) Scale the POI to something close to 1 using rateParams instructions in the datacards and 2) restrict the search range using either setParameterRanges or --rMin/--rMax can help the fit to converge and find a proper crossing.    </li>
 </ul>
