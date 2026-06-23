@@ -130,7 +130,7 @@ class ShapeBuilder(ModelBuilder):
                 )
                 if self.options.optimizeExistingTemplates:
                     pdf1 = self.optimizeExistingTemplates(pdf)
-                    if pdf1 is not pdf:
+                    if pdf1 != pdf:
                         self.out.dont_delete.append(pdf1)
                         pdf = pdf1
                 extranorm = self.getExtraNorm(b, p)
@@ -481,8 +481,7 @@ class ShapeBuilder(ModelBuilder):
                         self.out.var("CMS_fakeObs").setBins(1)
                         self.doSet("CMS_fakeObsSet", "CMS_fakeObs")
                         self.doVar("CMS_fakeWeight[0,1]")
-                        self.out.var("CMS_fakeWeight").removeMin()
-                        self.out.var("CMS_fakeWeight").removeMax()
+                        self.out.var("CMS_fakeWeight").removeRange()
                         shapeObs["CMS_fakeObsSet"] = self.out.set("CMS_fakeObsSet")
                     if p == self.options.dataname:
                         self.pdfModes[b] = "binned"
@@ -947,7 +946,6 @@ class ShapeBuilder(ModelBuilder):
         if self.options.useHistPdf != "always":
             if nominalPdf.InheritsFrom("TH1"):
                 rebins = ROOT.TList()
-                rebins.SetOwner(True)  # The list takes ownership of the rebinned histograms
                 maxbins = 0
                 for i in range(pdfs.GetSize()):
                     rebinned = self.rebinH1(pdfs.At(i))
@@ -1035,7 +1033,7 @@ class ShapeBuilder(ModelBuilder):
                     )
                 _cache[(channel, process)] = rhp
                 return rhp
-            elif nominalPdf.InheritsFrom("RooParametricHist"):
+            elif nominalPdf.InheritsFrom("RooParametricHist") or nominalPdf.InheritsFrom("RooParametricHist2D"):
                 # Add the shape morphs to it. Cannot pass a collection of DataHists so we have to convert to PDFs first?!
                 for syst, scale, shapeUp, shapeDown in morphs:
                     nominalPdf.addMorphs(shapeUp, shapeDown, coeffs.find(syst), qrange)
@@ -1266,7 +1264,6 @@ class ShapeBuilder(ModelBuilder):
                 if self.options.useHistPdf == "never":
                     shape = self.rebinH1(shape)
                     tlist = ROOT.TList()
-                    tlist.SetOwner(True)
                     tlist.Add(shape)
                     if channelBinParFlag:
                         rhp = ROOT.CMSHistFunc(
@@ -1405,7 +1402,7 @@ class ShapeBuilder(ModelBuilder):
             newservers = []
             for a in arg.servers():
                 aopt = self.optimizeMHDependency(a, wsp, MH, indent=indent + "   ")
-                if aopt is not a:
+                if aopt != a:
                     newservers.append((a, aopt))
             if newservers:
                 print(
